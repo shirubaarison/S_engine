@@ -3,8 +3,8 @@
 
 Input::Input() {}
 
-bool Input::init(Window *i_window) {
-  Input::window = i_window->getWindow();
+bool Input::init(Window &i_window) {
+  Input::window = i_window.getWindow();
 
   if (window == nullptr) { 
     std::cerr << "[Input] failed to initialized. Window is null.\n";

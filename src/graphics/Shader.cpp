@@ -1,6 +1,29 @@
 #include "graphics/Shader.h"
+#include "utils/debug.h"
+
+#include <fstream>
 
 #define LOG_SIZE 1024
+
+std::string get_file_contents(const char *path) {
+  std::string result = "";
+  std::ifstream file(path);
+
+  if (!file) {
+    std::cerr << "Error trying to open file: '" << path << "'.\n";
+    return result;
+  }
+
+  std::string line = "";
+  if (file.is_open()) {
+    while (std::getline(file, line)) {
+      result += line + '\n';
+    }
+    file.close();
+  }
+
+  return result;
+}
 
 static void checkCompilerError(GLuint object, std::string type) {
   int success;
@@ -25,7 +48,13 @@ static void checkCompilerError(GLuint object, std::string type) {
   }
 }
 
-Shader::Shader(const char *vertexSource, const char *fragmentSource) {
+Shader::Shader(const char *vertexPath, const char *fragmentPath) {
+  std::string vertexContents = get_file_contents(vertexPath);
+  std::string fragmentContents = get_file_contents(fragmentPath);
+
+  const char *vertexSource = vertexContents.c_str();
+  const char *fragmentSource = fragmentContents .c_str();
+
   GLuint sVertex, sFragment;
 
   // Vertex 
@@ -53,7 +82,12 @@ Shader::Shader(const char *vertexSource, const char *fragmentSource) {
   glDeleteShader(sVertex);
   glDeleteShader(sFragment);
 
+#ifdef DEBUG_MESSAGES 
+  std::cout << "[Shader] shaders: '" << vertexPath << "' and '" << fragmentPath << "' loaded successfully." << std::endl;
+#endif
 }
+
+Shader::Shader() {}
 
 Shader &Shader::use() {
   glUseProgram(this->ID);

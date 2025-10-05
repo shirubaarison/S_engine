@@ -10,7 +10,7 @@ class Input {
 public:
   Input();
 
-  bool init(Window *iWindow);
+  bool init(Window &iWindow);
   bool isKeyPressed(int key);
   bool isKeyReleased(int key);
 

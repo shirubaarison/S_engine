@@ -10,7 +10,8 @@ public:
   GLuint ID;
   GLuint unit;
   std::string path;
- 
+
+  Texture2D();
   Texture2D(const char *imagePath, GLuint slot, GLenum wrapping);
  
   void generate();

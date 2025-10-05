@@ -12,6 +12,8 @@ class Game {
 
   void update(float deltaTime);
   void render();
+  
+  void loadAssets();
 public:
   Game();
 

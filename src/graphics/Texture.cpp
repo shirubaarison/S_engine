@@ -1,7 +1,9 @@
-#include "graphics/Texture.h"
-#include "stb_image.h"
+#include <stb_image.h>
 
+#include "graphics/Texture.h"
 #include "utils/debug.h"
+
+Texture2D::Texture2D() {}
 
 Texture2D::Texture2D(const char *imagePath, GLuint slot, GLenum wrapping) : unit(slot), path(imagePath) {
   int width, height, nrChannels;
@@ -44,7 +46,7 @@ Texture2D::Texture2D(const char *imagePath, GLuint slot, GLenum wrapping) : unit
     stbi_image_free(data);
 
 #ifdef DEBUG_MESSAGES 
-  std::cout << "[Texture] loaded '" << imagePath << "' successfully. Info: " << width << "x" << height << " channels: " << nrChannels << ".\n";
+  std::cout << "[Texture] loaded '" << imagePath << "' successfully. Info: " << width << "x" << height << " channels: " << nrChannels << "." << std::endl;
 #endif
 }
 

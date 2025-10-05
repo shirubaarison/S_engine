@@ -10,8 +10,10 @@
 class Shader {
 public:
   GLuint ID;
-  
-  Shader(const char *vertexSource, const char *fragmentSource);
+
+  Shader();
+  Shader(const char *vertexPath, const char *fragmentPath);
+
   Shader &use();
 
   // utility
