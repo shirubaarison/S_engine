@@ -13,6 +13,9 @@ bool Game::init() {
   renderer = new Renderer();
   if (!renderer->init()) return false;
 
+  input = new Input();
+  if (!input->init(window)) return false;
+
   #ifdef DEBUG_MESSAGES 
     std::cout << "[Game] initialization completed successfully!";
   #endif
