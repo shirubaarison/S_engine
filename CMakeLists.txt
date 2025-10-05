@@ -32,6 +32,10 @@ FetchContent_MakeAvailable(glm)
 add_library(glad STATIC ${VENDOR_DIR}/glad/src/glad.c)
 target_include_directories(glad PUBLIC ${VENDOR_DIR}/glad/include)
 
+# stb
+add_library(stb STATIC ${VENDOR_DIR}/stb/stb_image.c)
+target_include_directories(stb PUBLIC ${VENDOR_DIR}/stb)
+
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 add_executable(${PROJECT_NAME} ${SOURCES})
@@ -49,6 +53,7 @@ target_link_libraries(
   ${PROJECT_NAME}
   PRIVATE
     glad
+    stb
     glfw
     glm
 )
