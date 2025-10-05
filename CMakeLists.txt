@@ -42,6 +42,7 @@ target_include_directories(
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_SOURCE_DIR}/src
     ${VENDOR_DIR}/glad/include
+    ${VENDOR_DIR}/stb
 )
 
 target_link_libraries(
