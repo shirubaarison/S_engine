@@ -2,11 +2,6 @@
 
 #define LOG_SIZE 1024
 
-Shader &Shader::use() {
-  glUseProgram(this->ID);
-  return *this;
-}
-
 static void checkCompilerError(GLuint object, std::string type) {
   int success;
   char infoLog[LOG_SIZE];
@@ -30,7 +25,7 @@ static void checkCompilerError(GLuint object, std::string type) {
   }
 }
 
-void Shader::compile(const char *vertexSource, const char *fragmentSource) {
+Shader::Shader(const char *vertexSource, const char *fragmentSource) {
   GLuint sVertex, sFragment;
 
   // Vertex 
@@ -57,6 +52,12 @@ void Shader::compile(const char *vertexSource, const char *fragmentSource) {
 
   glDeleteShader(sVertex);
   glDeleteShader(sFragment);
+
+}
+
+Shader &Shader::use() {
+  glUseProgram(this->ID);
+  return *this;
 }
 
 void Shader::setFloat    (const char *name, float value) const {

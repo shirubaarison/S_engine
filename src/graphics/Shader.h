@@ -11,10 +11,8 @@ class Shader {
 public:
   GLuint ID;
   
-  Shader();
+  Shader(const char *vertexSource, const char *fragmentSource);
   Shader &use();
-
-  void compile(const char *vertexSource, const char *fragmentSource);
 
   // utility
   void setFloat    (const char *name, float value) const;
