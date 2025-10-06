@@ -5,6 +5,8 @@
 #include <GLFW/glfw3.h>
 
 class Window {
+  int width;
+  int height;
   GLFWwindow *mWindow;
 public:
   Window();
@@ -14,6 +16,9 @@ public:
   bool shouldClose();
 
   GLFWwindow *getWindow() const;
+
+  int getWidth() const;
+  int getHeight() const;
 };
 
 #endif // !WINDOW_CLASS_H

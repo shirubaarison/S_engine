@@ -5,7 +5,7 @@
 #include "utils/debug.h"
 #include "utils/errorReporting.h"
 
-Window::Window() {}
+Window::Window() : width(WIDTH), height(HEIGHT) {}
 
 static void setHints() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -51,7 +51,6 @@ bool Window::init() {
   }
 
   configWindow(mWindow);
-  
 
 #ifdef DEBUG_MESSAGES
   std::cout << "[Window] GLFW Window succesfully created.\n";
@@ -86,3 +85,7 @@ bool Window::shouldClose() {
 }
 
 GLFWwindow *Window::getWindow() const { return mWindow; }
+
+int Window::getWidth() const { return width; }
+
+int Window::getHeight() const { return height; }
