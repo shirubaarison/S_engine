@@ -7,7 +7,6 @@ Texture2D::Texture2D() {}
 
 Texture2D::Texture2D(const char *imagePath, GLuint slot, GLenum wrapping) : unit(slot), path(imagePath) {
   int width, height, nrChannels;
-  stbi_set_flip_vertically_on_load(true);
   unsigned char *data = stbi_load(imagePath, &width, &height, &nrChannels, 0);
 
   if (data == nullptr) {
@@ -30,8 +29,9 @@ Texture2D::Texture2D(const char *imagePath, GLuint slot, GLenum wrapping) : unit
       std::cerr << "[Texture] error when trying to define which format is the texture '" << imagePath << "'.\n'";
       return;
   }
-
-  glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_INT, data);
+  
+  glBindTexture(GL_TEXTURE_2D, this->ID);
+  glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
   glGenerateMipmap(GL_TEXTURE_2D);
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapping);
@@ -46,7 +46,7 @@ Texture2D::Texture2D(const char *imagePath, GLuint slot, GLenum wrapping) : unit
     stbi_image_free(data);
 
 #ifdef DEBUG_MESSAGES 
-  std::cout << "[Texture] loaded '" << imagePath << "' successfully. Info: " << width << "x" << height << " channels: " << nrChannels << "." << std::endl;
+  std::cout << "[Texture] id: " << this->ID << " loaded '" << imagePath << "' successfully. Info: " << width << "x" << height << " channels: " << nrChannels << "." << std::endl;
 #endif
 }
 

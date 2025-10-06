@@ -23,6 +23,7 @@ public:
   void setVector2f (const char *name, const glm::vec2 &value) const;
   void setVector3f (const char *name, float x, float y, float z) const;
   void setVector3f (const char *name, const glm::vec3 &value) const;
+  void setMatrix4  (const char *name, const glm::mat4 &matrix) const;
 };
 
 #endif // !SHADER_CLASS_H

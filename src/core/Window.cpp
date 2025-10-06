@@ -3,6 +3,7 @@
 #include "core/Window.h"
 #include "utils/common.h"
 #include "utils/debug.h"
+#include "utils/errorReporting.h"
 
 Window::Window() {}
 
@@ -44,11 +45,22 @@ bool Window::init() {
 
   glfwMakeContextCurrent(mWindow);
 
+  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+    std::cerr << "GLAD initialization failed.\n";
+    return false;
+  }
+
   configWindow(mWindow);
+  
 
 #ifdef DEBUG_MESSAGES
   std::cout << "[Window] GLFW Window succesfully created.\n";
 #endif
+  enableReportGlErrors();
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glViewport(0, 0, WIDTH, HEIGHT);
 
   return true;
 }
