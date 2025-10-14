@@ -1,11 +1,19 @@
 #include <iostream>
 
 #include "core/Window.h"
+#include "GLFW/glfw3.h"
 #include "utils/common.h"
 #include "utils/debug.h"
 #include "utils/errorReporting.h"
 
 Window::Window() : width(WIDTH), height(HEIGHT) {}
+
+Window::Window(const std::string& title, int width, int height) 
+  : width(width), height(height), mWindowTitle(title), mIsFullscreen(false) {}
+
+Window::~Window() {
+  destroy();
+}
 
 static void setHints() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -80,8 +88,33 @@ void Window::update() {
   glfwSwapBuffers(mWindow);
 }
 
+
+void Window::toggleFullScreen() {
+  if (mWindow == nullptr) return;
+
+  mIsFullscreen = !mIsFullscreen;
+  GLFWmonitor* monitor = glfwGetWindowMonitor(mWindow);
+  const GLFWvidmode* mode = glfwGetVideoMode(monitor); 
+
+  if(mIsFullscreen) {
+    glfwSetWindowMonitor(mWindow, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+  } else {
+    glfwSetWindowMonitor(mWindow, monitor,
+                         (mode->width / 2) - WIDTH / 2,
+                         (mode->height / 2) - HEIGHT / 2,
+                         WIDTH, HEIGHT, mode->refreshRate);
+  }
+}
+
 bool Window::shouldClose() {
   return mWindow ? glfwWindowShouldClose(mWindow) : false;
+}
+
+void Window::destroy() {
+  if (mWindow == nullptr) 
+    return;
+
+  glfwDestroyWindow(mWindow);
 }
 
 GLFWwindow *Window::getWindow() const { return mWindow; }

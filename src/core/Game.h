@@ -14,12 +14,13 @@ class Game {
 
   void update(float deltaTime);
   void render();
-  
+  void handleInput(double deltaTime);
   void loadAssets();
 
   void handlePlayerCollision();
 public:
   Game();
+  ~Game();
 
   bool init();
   void run();

@@ -5,9 +5,8 @@
 #include "resources/ResouceManager.h"
 #include "utils/debug.h"
 
-#define FLOOR_Y 0
-
 Game::Game() {}
+Game::~Game() { shutdown(); }
 
 bool Game::init() {
   window = new Window();
@@ -40,12 +39,22 @@ void Game::shutdown() {
   // TODO
 }
 
-void Game::render() {
+void Game::update(float deltaTime) {
+  (void)deltaTime;
+  if (input->isKeyPressed(GLFW_KEY_F)) {
+    window->toggleFullScreen();
+  }
+}
 
+void Game::render() {
   glm::vec2 playerPos = player->getPos();
 
   renderer->drawSprite(ResourceManager::getTexture("player"), playerPos,
                        glm::vec2(500.0f, 500.0f));
+}
+
+void Game::handleInput(double deltaTime) {
+  player->update(deltaTime);
 }
 
 void Game::run() {
@@ -62,9 +71,9 @@ void Game::run() {
 
     renderer->render();
 
+    handleInput(deltaTime);
+    update(deltaTime);
     render();
-
-    player->update(deltaTime);
 
     window->update();
   }
