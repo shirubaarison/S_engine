@@ -3,6 +3,9 @@
 
 #include "glm/ext/vector_float2.hpp"
 #include "input/Input.h"
+
+enum class Direction { None, Up, Down, Left, Right };
+
 class Player {
   Input *input;
   float baseSpeed;
@@ -12,6 +15,8 @@ class Player {
 
   int width, height;
 
+  Direction direction;
+  bool isDead;
   void handleKeyboardInput(float deltaTime);
 public:
   Player(Input *input, glm::vec2 startPos = glm::vec2(0, 0));

@@ -12,7 +12,7 @@
 
 Player::Player(Input *input, glm::vec2 pos)
     : input(input), baseSpeed(5000.0f), pos(pos), velocity(glm::vec2(0, 0)),
-      width(PLAYER_WIDTH), height(PLAYER_HEIGHT) {
+      width(PLAYER_WIDTH), height(PLAYER_HEIGHT), direction(Direction::None), isDead(false){
 #ifdef DEBUG_MESSAGES 
   std::cout << "[Player] initialized successfully." << std::endl;
 #endif
