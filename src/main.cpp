@@ -1,11 +1,11 @@
-#include "core/Game.h"
+#include "core/Engine.h"
 
 int main () {
-  Game game;
+  Engine engine;
 
-  if (!game.init()) return -1;
+  if (!engine.init()) return -1;
 
-  game.run();
+  engine.run();
 
-  game.shutdown();
+  engine.shutdown();
 }

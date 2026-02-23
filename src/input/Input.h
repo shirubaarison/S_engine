@@ -1,16 +1,13 @@
 #ifndef INPUT_CLASS_H
 #define INPUT_CLASS_H
 
-#include "core/Window.h"
+#include "GLFW/glfw3.h"
 
 class Input {
-  GLFWwindow *window;
-  double lastX;
-  double lastY;
 public:
   Input();
 
-  bool init(Window &iWindow);
+  bool init(GLFWwindow* iWindow);
   bool isKeyPressed(int key);
   bool isKeyReleased(int key);
 
@@ -18,6 +15,11 @@ public:
 
   void getMousePosition(double &x, double &y) const;
   void setCurosrPosition(double x, double y);
+private:
+  GLFWwindow *m_window;
+
+  double lastX;
+  double lastY;
 };
 
 #endif // !INPUT_CLASS_H

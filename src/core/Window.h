@@ -1,7 +1,6 @@
 #ifndef WINDOW_CLASS_H
 #define WINDOW_CLASS_H
 
-#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <string>
 
@@ -10,7 +9,7 @@ class Window {
   int height;
   std::string mWindowTitle;
   GLFWwindow *mWindow;
-  
+
   bool mIsFullscreen;
 
   void destroy();

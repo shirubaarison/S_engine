@@ -3,8 +3,8 @@
 
 #include <iostream> // IWYU pragma: keep
 
-#define WIDTH 1280
-#define HEIGHT 720
+#define WIDTH 1024
+#define HEIGHT 800
 #define WINDOW_TITLE "S_ENGINE"
 
 #endif // !COMMON_H

@@ -1,23 +1,24 @@
+#include "GLFW/glfw3.h"
 #include "utils/debug.h"
 #include "input/Input.h"
 
 Input::Input() {}
 
-bool Input::init(Window &i_window) {
-  Input::window = i_window.getWindow();
+bool Input::init(GLFWwindow* window) {
+  m_window = window;
 
-  if (window == nullptr) { 
-    std::cerr << "[Input] failed to initialized. Window is null.\n";
+  if (m_window == nullptr) {
+    std::cerr << "[Input] failed to initialized. m_window is null.\n";
     return false;
   }
 
   int width, height;
-  glfwGetWindowSize(window, &width, &height);
+  glfwGetWindowSize(m_window, &width, &height);
 
   lastX = (double)(width/2.0f);
   lastY = (double)(height/2.0f);
 
-#ifdef DEBUG_MESSAGES 
+#ifdef DEBUG_MESSAGES
   std::cout << "[Input] initialized successfully.\n";
 #endif
 
@@ -25,29 +26,29 @@ bool Input::init(Window &i_window) {
 }
 
 bool Input::isKeyPressed(int key) {
-  if (window == nullptr) return false;
+  if (m_window == nullptr) return false;
 
-  return glfwGetKey(window, key) == GLFW_PRESS;
+  return glfwGetKey(m_window, key) == GLFW_PRESS;
 }
 
 bool Input::isKeyReleased(int key) {
-  if (window == nullptr) return false;
+  if (m_window == nullptr) return false;
 
-  return glfwGetKey(window, key) == GLFW_RELEASE;
+  return glfwGetKey(m_window, key) == GLFW_RELEASE;
 }
 
 bool Input::isMouseButtonPressed(int button) {
-  if (window == nullptr) return false;
+  if (m_window == nullptr) return false;
   
-  return glfwGetMouseButton(window, button) == GLFW_PRESS;
+  return glfwGetMouseButton(m_window, button) == GLFW_PRESS;
 }
 
 void Input::getMousePosition(double &x, double &y) const {
-  if (window == nullptr) {
+  if (m_window == nullptr) {
     x = y = -1;
     return;
   }
 
-  glfwGetCursorPos(window, &x, &y);
+  glfwGetCursorPos(m_window, &x, &y);
 }
 
