@@ -4,6 +4,7 @@
 #include "core/Renderer.h"
 #include "core/Window.h"
 #include "input/Input.h"
+#include "graphics/Camera.h"
 #include <memory>
 
 class Engine {
@@ -19,6 +20,7 @@ private:
   std::unique_ptr<Window> m_window;
   std::unique_ptr<Renderer> m_renderer;
   std::unique_ptr<Input> m_input;
+  std::unique_ptr<Camera> m_camera;
 
   void update(float deltaTime);
   void render();

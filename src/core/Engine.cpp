@@ -21,6 +21,8 @@ bool Engine::init() {
   if (!m_input->init(m_window->getWindow()))
     return false;
 
+  m_camera = std::make_unique<Camera>(glm::vec3{0.0f, 0.0f, 3.0f});
+
   loadAssets();
 
 #ifdef DEBUG_MESSAGES
@@ -44,7 +46,21 @@ void Engine::update(float deltaTime) {
 void Engine::render() {
 }
 
-void Engine::handleInput(double deltaTime) {
+void Engine::handleInput(double deltaTime) 
+{
+  if (m_input->isKeyPressed(GLFW_KEY_W))
+    m_camera->processKeyboard(Camera::Camera_Movement::FORWARD, deltaTime);
+  if (m_input->isKeyPressed(GLFW_KEY_S))
+    m_camera->processKeyboard(Camera::Camera_Movement::BACKWARD, deltaTime);
+  if (m_input->isKeyPressed(GLFW_KEY_A))
+    m_camera->processKeyboard(Camera::Camera_Movement::LEFT, deltaTime);
+  if (m_input->isKeyPressed(GLFW_KEY_D))
+    m_camera->processKeyboard(Camera::Camera_Movement::RIGHT, deltaTime);
+
+  double xoffset, yoffset;
+
+  m_input->getMouseOffset(xoffset, yoffset);
+  m_camera->processMouseMovement(xoffset, yoffset);
 }
 
 void Engine::run() {

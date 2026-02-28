@@ -32,14 +32,16 @@ bool Input::isKeyPressed(int key) {
 }
 
 bool Input::isKeyReleased(int key) {
-  if (m_window == nullptr) return false;
+  if (m_window == nullptr) 
+    return false;
 
   return glfwGetKey(m_window, key) == GLFW_RELEASE;
 }
 
 bool Input::isMouseButtonPressed(int button) {
-  if (m_window == nullptr) return false;
-  
+  if (m_window == nullptr) 
+    return false;
+
   return glfwGetMouseButton(m_window, button) == GLFW_PRESS;
 }
 
@@ -50,5 +52,34 @@ void Input::getMousePosition(double &x, double &y) const {
   }
 
   glfwGetCursorPos(m_window, &x, &y);
+}
+
+void Input::getMouseOffset(double &xoffset, double &yoffset)
+{
+  double xpos, ypos;
+  getMousePosition(xpos, ypos);
+
+  if (firstMouse) {
+    lastX = xpos;
+    lastY = ypos;
+    firstMouse = false;
+  }
+
+  xoffset = xpos - lastX;
+  yoffset = lastY - ypos;
+
+  lastX = xpos;
+  lastY = ypos;
+}
+
+void Input::setMouseCaptured(bool captured)
+{
+  if (m_window == nullptr) return;
+
+  if (captured) {
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  } else {
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+  }
 }
 
