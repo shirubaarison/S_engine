@@ -37,6 +37,19 @@ target_include_directories(glad PUBLIC ${VENDOR_DIR}/glad/include)
 add_library(stb STATIC ${VENDOR_DIR}/stb/stb_image.c)
 target_include_directories(stb PUBLIC ${VENDOR_DIR}/stb)
 
+# Assimp
+FetchContent_Declare(
+  assimp
+  GIT_REPOSITORY https://github.com/assimp/assimp.git
+  GIT_TAG v5.3.1)
+set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_OBJ_IMPORTER ON CACHE BOOL "" FORCE)
+set(ASSIMP_NO_EXPORT ON CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
+set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(assimp)
+
 file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 add_executable(${PROJECT_NAME} ${SOURCES})
@@ -57,6 +70,7 @@ target_link_libraries(
     stb
     glfw
     glm
+    assimp
 )
 
 if (UNIX AND NOT APPLE)
