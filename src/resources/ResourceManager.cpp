@@ -2,7 +2,7 @@
 #include "resources/ResouceManager.h"
 
 std::map<std::string, Shader> ResourceManager::shaders;
-std::map<std::string, Texture2D> ResourceManager::textures;
+std::map<std::string, Texture> ResourceManager::textures;
 
 Shader &ResourceManager::loadShader(const std::string &name, const char *vertexPath, const char *fragmentPath) {
   shaders[name] = Shader(vertexPath, fragmentPath);
@@ -14,14 +14,14 @@ Shader &ResourceManager::getShader(const std::string &name) {
   return shaders[name];
 }
 
-Texture2D &ResourceManager::loadTexture(const std::string &name, const char *path) {
+Texture &ResourceManager::loadTexture(const std::string &name, const char *path) {
   // TODO: change wrapping ? and what about slot?
-  textures[name] = Texture2D(path, 0, GL_REPEAT);
+  textures[name] = Texture(path, 0, GL_REPEAT);
 
   return textures[name];
 }
 
-Texture2D &ResourceManager::getTexture(const std::string &name) {
+Texture &ResourceManager::getTexture(const std::string &name) {
   return textures[name];
 }
 
