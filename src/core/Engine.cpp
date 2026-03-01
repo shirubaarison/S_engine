@@ -1,7 +1,7 @@
 #include <exception>
 #include <iostream>
 #include <memory>
-#include "resources/ResouceManager.h"
+#include "resources/ResourceManager.h"
 #include "core/Engine.h"
 #include "core/Renderer.h"
 #include "utils/debug.h"

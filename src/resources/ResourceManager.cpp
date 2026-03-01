@@ -1,4 +1,4 @@
-#include "resources/ResouceManager.h"
+#include "resources/ResourceManager.h"
 
 std::map<std::string, Shader> ResourceManager::shaders;
 
