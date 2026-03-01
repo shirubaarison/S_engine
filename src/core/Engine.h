@@ -1,8 +1,10 @@
 #ifndef ENGINE_CLASS_H
 #define ENGINE_CLASS_H
 
+#include "core/GameObject.h"
 #include "core/Renderer.h"
 #include "core/Window.h"
+#include "game/Player.h"
 #include "input/Input.h"
 #include "graphics/Camera.h"
 #include <memory>
@@ -21,6 +23,9 @@ private:
   std::unique_ptr<Renderer> m_renderer;
   std::unique_ptr<Input> m_input;
   std::unique_ptr<Camera> m_camera;
+  std::vector<std::unique_ptr<GameObject>> m_gameObjects;
+
+  Player *m_player = nullptr;
 
   void update(float deltaTime);
   void render();
