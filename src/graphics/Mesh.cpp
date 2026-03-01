@@ -1,8 +1,9 @@
 #include "graphics/Mesh.h"
 
-Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices)
+Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, unsigned int materialIndex)
   : m_vertices(vertices),
-    m_indices(indices)
+    m_indices(indices),
+    m_materialIndex(materialIndex)
 {
   setupMesh();
 }

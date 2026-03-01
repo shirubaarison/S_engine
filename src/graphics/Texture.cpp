@@ -7,9 +7,10 @@
 
 Texture::Texture() : m_id{0}, m_unit{0}, m_width{0}, m_height{0} {}
 
-Texture::Texture(const char *imagePath, GLuint slot, GLenum wrapping)
+Texture::Texture(const char *imagePath, const char *type, GLuint slot, GLenum wrapping)
     : m_unit(slot),
-      m_path(imagePath)
+      m_path(imagePath),
+      m_type(type)
 {
   int width, height, nrChannels;
   unsigned char *data = stbi_load(imagePath, &width, &height, &nrChannels, 0);

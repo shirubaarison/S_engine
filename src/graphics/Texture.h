@@ -7,7 +7,7 @@
 class Texture {
 public:
   Texture();
-  Texture(const char *imagePath, GLuint slot, GLenum wrapping);
+  Texture(const char *imagePath, const char *type, GLuint slot, GLenum wrapping);
   ~Texture();
 
   Texture(const Texture&) = delete;
@@ -26,6 +26,7 @@ private:
   GLuint m_id{0};
   GLuint m_unit{0};
   std::string m_path;
+  std::string m_type;
   unsigned int m_width{0}, m_height{0};
 };
 
