@@ -9,8 +9,6 @@
 
 class Shader {
 public:
-  GLuint ID;
-
   Shader();
   Shader(const char *vertexPath, const char *fragmentPath);
 
@@ -23,7 +21,11 @@ public:
   void setVector2f (const char *name, const glm::vec2 &value) const;
   void setVector3f (const char *name, float x, float y, float z) const;
   void setVector3f (const char *name, const glm::vec3 &value) const;
+  void setVector4f (const char *name, const glm::vec4 &value) const;
+  void setVector4f (const char *name, float x, float y, float z, float w) const;
   void setMatrix4  (const char *name, const glm::mat4 &matrix) const;
+private:
+  GLuint m_id;
 };
 
 #endif // !SHADER_CLASS_H
