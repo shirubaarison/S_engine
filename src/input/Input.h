@@ -18,12 +18,15 @@ public:
   void setCurosrPosition(double x, double y);
 
   void setMouseCaptured(bool captured);
+
+  bool getMouseCaptured() const { return m_mouseCaptured; }
 private:
   GLFWwindow *m_window;
 
   double lastX;
   double lastY;
   bool firstMouse{true};
+  bool m_mouseCaptured{false};
 };
 
 #endif // !INPUT_CLASS_H

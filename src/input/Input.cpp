@@ -76,6 +76,7 @@ void Input::setMouseCaptured(bool captured)
 {
   if (m_window == nullptr) return;
 
+  m_mouseCaptured = captured;
   if (captured) {
     glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
   } else {
