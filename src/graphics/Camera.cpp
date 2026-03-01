@@ -26,9 +26,9 @@ glm::mat4 Camera::getViewMatrix() const
   return glm::lookAt(m_position, m_position + m_front, m_up);
 }
 
-glm::mat4 Camera::getProjectionMatrix(float aspectRatio) const
+glm::mat4 Camera::getProjectionMatrix() const
 {
-  return glm::perspective(glm::radians(m_zoom), aspectRatio, m_nearPlane,
+  return glm::perspective(glm::radians(m_zoom), m_aspectRatio, m_nearPlane,
                           m_farPlane);
 }
 

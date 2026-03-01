@@ -19,7 +19,7 @@ public:
   static constexpr float DEFAULT_SPEED        = 2.5f;
   static constexpr float DEFAULT_SENSITIVITY  = 0.1f;
   static constexpr float DEFAULT_ZOOM         = 45.0f;
-  
+
   static constexpr float DEFAULT_NEAR_PLANE   = 0.1f;
   static constexpr float DEFAULT_FAR_PLANE    = 100.0f;
 
@@ -30,7 +30,7 @@ public:
   ~Camera();
 
   glm::mat4 getViewMatrix() const;
-  glm::mat4 getProjectionMatrix(float aspectRatio) const;
+  glm::mat4 getProjectionMatrix() const;
 
   void processKeyboard(Camera_Movement direction, float deltaTime);
   void processMouseMovement(float xoffset, float yoffset, bool constrainPitch = true);
@@ -47,10 +47,12 @@ public:
   float getMouseSen() const { return m_mouseSen; }
   float getNearPlane() const { return m_nearPlane; }
   float getFarPlane() const { return m_farPlane; }
+  float getAspectRatio() const { return m_aspectRatio; }
 
   void setPosition(const glm::vec3& pos);
   void setMovementSpeed(float moveSpeed) { m_moveSpeed = moveSpeed; }
   void setMouseSensibility(float sensibility) { m_mouseSen = sensibility; }
+  void setAspectRatio(float aspectRatio) { m_aspectRatio = aspectRatio; }
 
 private:
   glm::vec3 m_position;
@@ -69,6 +71,7 @@ private:
 
   float m_nearPlane;
   float m_farPlane;
+  float m_aspectRatio;
 
   void updateCameraVectors();
 };

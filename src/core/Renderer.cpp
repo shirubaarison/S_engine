@@ -40,7 +40,7 @@ void Renderer::drawModel(const Model& model, Shader& shader, const Camera& camer
 
   shader.setMatrix4("model", modelMatrix);
   shader.setMatrix4("view", camera.getViewMatrix());
-  shader.setMatrix4("projection", camera.getProjectionMatrix(m_aspectRatio));
+  shader.setMatrix4("projection", camera.getProjectionMatrix());
 
   shader.setVector3f("lightPos", glm::vec3(2.0f, 4.0f, 3.0f));
   shader.setVector4f("lightColor", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));

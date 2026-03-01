@@ -2,44 +2,62 @@
 #include <glad/glad.h>
 #include "core/Window.h"
 #include "GLFW/glfw3.h"
+#include "graphics/Camera.h"
 #include "utils/common.h"
 #include "utils/debug.h"
 
-Window::Window() : width(WIDTH), height(HEIGHT) {}
+namespace
+{
+  static void setHints()
+  {
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  }
 
-Window::Window(const std::string& title, int width, int height) 
-  : width(width), height(height), mWindowTitle(title), mIsFullscreen(false) {}
+  static void windowSizeCallback(GLFWwindow *window, int width, int height)
+  {
+    glViewport(0, 0, width, height);
 
-Window::~Window() {
-  destroy();
+    Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+  if (win && win->getCamera()) {
+    float aspectRatio = (float)width / (float)height;
+    win->getCamera()->setAspectRatio(aspectRatio);
+  }
+  }
+
+  static void configWindow(GLFWwindow *window, Window *windowInstance)
+  {
+    const GLFWvidmode *mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    glfwSetWindowPos(window, (mode->width / 2) - (WIDTH / 2),
+                    (mode->height / 2) - (HEIGHT / 2));
+
+    glfwSetWindowUserPointer(window, windowInstance);
+    glfwSetWindowSizeCallback(window, windowSizeCallback);
+    glfwFocusWindow(window);
+  }
+
+  static void glfwErrorCallback(int code, const char* desc) { std::cerr << "GLFW Error: (" << code << "): " << desc << "\n"; }
 }
 
-static void setHints() {
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+Window::Window(const std::string& title, int width, int height)
+  : m_width(width),
+    m_height(height),
+    m_windowTitle(title),
+    m_window(nullptr),
+    m_isFullscreen(false),
+    m_camera(nullptr) {}
+
+Window::~Window()
+{
+  if (m_window == nullptr)
+    return;
+
+  glfwDestroyWindow(m_window);
 }
 
-static void windowSizeCallback(GLFWwindow *window, int width, int height) {
-  (void)window; // supress unused variable
-  glViewport(0, 0, width, height);
-}
-
-static void configWindow(GLFWwindow *window) {
-  const GLFWvidmode *mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-  glfwSetWindowPos(window, (mode->width / 2) - (WIDTH / 2),
-                   (mode->height / 2) - (HEIGHT / 2));
-
-  glfwSetWindowUserPointer(window, glfwGetWindowUserPointer(window));
-  glfwSetWindowSizeCallback(window, windowSizeCallback);
-  glfwFocusWindow(window);
-}
-
-static void glfwErrorCallback(int code, const char* desc) {
-  std::cerr << "GLFW Error: (" << code << "): " << desc << "\n";
-}
-
-bool Window::init() {
+bool Window::init()
+{
   glfwSetErrorCallback(glfwErrorCallback);
 
   if (!glfwInit()) {
@@ -49,16 +67,16 @@ bool Window::init() {
 
   setHints();
 
-  mWindow = glfwCreateWindow(WIDTH, HEIGHT, WINDOW_TITLE, nullptr, nullptr);
-  if (mWindow == nullptr) {
+  m_window = glfwCreateWindow(WIDTH, HEIGHT, WINDOW_TITLE, nullptr, nullptr);
+  if (m_window == nullptr) {
     std::cerr << "Failed to create GLFW window.\n";
     glfwTerminate();
     return false;
   }
 
-  glfwMakeContextCurrent(mWindow);
+  glfwMakeContextCurrent(m_window);
 
-  configWindow(mWindow);
+  configWindow(m_window, this);
 
 #ifdef DEBUG_MESSAGES
   std::cout << "[Window] GLFW Window succesfully created.\n";
@@ -67,53 +85,41 @@ bool Window::init() {
   return true;
 }
 
-void Window::shutdown() {
-  if (mWindow == nullptr)
+void Window::shutdown()
+{
+  if (m_window == nullptr)
     return;
 
-  glfwDestroyWindow(mWindow);
+  glfwDestroyWindow(m_window);
   glfwTerminate();
 }
 
-void Window::update() {
-  if (mWindow == nullptr)
+void Window::update()
+{
+  if (m_window == nullptr)
     return;
 
   glfwPollEvents();
-  glfwSwapBuffers(mWindow);
+  glfwSwapBuffers(m_window);
 }
 
 
-void Window::toggleFullScreen() {
-  if (mWindow == nullptr) return;
+void Window::toggleFullScreen()
+{
+  if (m_window == nullptr) return;
 
-  mIsFullscreen = !mIsFullscreen;
-  GLFWmonitor* monitor = glfwGetWindowMonitor(mWindow);
-  const GLFWvidmode* mode = glfwGetVideoMode(monitor); 
+  m_isFullscreen = !m_isFullscreen;
+  GLFWmonitor* monitor = glfwGetWindowMonitor(m_window);
+  const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
-  if(mIsFullscreen) {
-    glfwSetWindowMonitor(mWindow, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+  if(m_isFullscreen) {
+    glfwSetWindowMonitor(m_window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
   } else {
-    glfwSetWindowMonitor(mWindow, monitor,
+    glfwSetWindowMonitor(m_window, monitor,
                          (mode->width / 2) - WIDTH / 2,
                          (mode->height / 2) - HEIGHT / 2,
                          WIDTH, HEIGHT, mode->refreshRate);
   }
 }
 
-bool Window::shouldClose() {
-  return mWindow ? glfwWindowShouldClose(mWindow) : false;
-}
-
-void Window::destroy() {
-  if (mWindow == nullptr) 
-    return;
-
-  glfwDestroyWindow(mWindow);
-}
-
-GLFWwindow *Window::getWindow() const { return mWindow; }
-
-int Window::getWidth() const { return width; }
-
-int Window::getHeight() const { return height; }
+bool Window::shouldClose() { return m_window ? glfwWindowShouldClose(m_window) : false; }

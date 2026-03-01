@@ -3,13 +3,14 @@
 #include "core/Engine.h"
 #include "core/Renderer.h"
 #include "utils/debug.h"
+#include "utils/common.h"
 
 Engine::Engine() {}
 Engine::~Engine() { shutdown(); }
 
-bool Engine::init() {
-  m_window = std::make_unique<Window>();
-
+bool Engine::init()
+{
+  m_window = std::make_unique<Window>(WINDOW_TITLE, WIDTH, HEIGHT);
   if (!m_window->init())
     return false;
 
@@ -22,6 +23,9 @@ bool Engine::init() {
     return false;
 
   m_camera = std::make_unique<Camera>(glm::vec3{0.0f, 0.0f, 3.0f});
+  m_camera->setAspectRatio((float)m_window->getWidth() / m_window->getHeight());
+
+  m_window->setCamera(m_camera.get());
 
   loadAssets();
 
@@ -43,10 +47,9 @@ void Engine::update(float deltaTime) {
   }
 }
 
-void Engine::render() {
-}
+void Engine::render() {}
 
-void Engine::handleInput(double deltaTime) 
+void Engine::handleInput(double deltaTime)
 {
   if (m_input->isKeyPressed(GLFW_KEY_W))
     m_camera->processKeyboard(Camera::Camera_Movement::FORWARD, deltaTime);
@@ -57,13 +60,18 @@ void Engine::handleInput(double deltaTime)
   if (m_input->isKeyPressed(GLFW_KEY_D))
     m_camera->processKeyboard(Camera::Camera_Movement::RIGHT, deltaTime);
 
-  double xoffset, yoffset;
+  if (m_input->isKeyPressed(GLFW_KEY_ESCAPE))
+    m_input->setMouseCaptured(!m_input->getMouseCaptured());
 
-  m_input->getMouseOffset(xoffset, yoffset);
-  m_camera->processMouseMovement(xoffset, yoffset);
+  if (m_input->getMouseCaptured()) {
+    double xoffset, yoffset;
+    m_input->getMouseOffset(xoffset, yoffset);
+    m_camera->processMouseMovement(xoffset, yoffset);
+  }
 }
 
-void Engine::run() {
+void Engine::run()
+{
   float deltaTime = 0.0f;
   float mLastFrame = 0.0f;
 
@@ -82,7 +90,8 @@ void Engine::run() {
   }
 }
 
-void Engine::loadAssets() {
+void Engine::loadAssets()
+{
   ResourceManager::loadShader("default", "shaders/default.vert", "shaders/default.frag");
 
 #ifdef DEBUG_MESSAGES
