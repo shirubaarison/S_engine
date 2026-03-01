@@ -7,12 +7,12 @@
 
 Texture::Texture() : m_id{0}, m_unit{0}, m_width{0}, m_height{0} {}
 
-Texture::Texture(const char *imagePath, const char *type, GLuint slot, GLenum wrapping)
-    : m_unit(slot),
-      m_path(imagePath),
+Texture::Texture(const char *imagePath, const char *type, GLenum wrapping)
+    : m_path(imagePath),
       m_type(type)
 {
   int width, height, nrChannels;
+  stbi_set_flip_vertically_on_load(true);
   unsigned char *data = stbi_load(imagePath, &width, &height, &nrChannels, 0);
 
   if (data == nullptr) {
@@ -81,13 +81,11 @@ void Texture::unbind() const { glBindTexture(GL_TEXTURE_2D, 0); }
 
 Texture::Texture(Texture&& other) noexcept
   : m_id{other.m_id},
-    m_unit{other.m_unit},
     m_path{std::move(other.m_path)},
     m_width{other.m_width},
     m_height{other.m_height}
 {
   other.m_id = 0;
-  other.m_unit = 0;
   other.m_width = 0;
   other.m_height = 0;
 }
@@ -99,7 +97,6 @@ Texture& Texture::operator=(Texture&& other) noexcept
       glDeleteTextures(1, &m_id);
 
     m_id = other.m_id;
-    m_unit = other.m_unit;
     m_path = std::move(other.m_path);
     m_width = other.m_width;
     m_height = other.m_height;

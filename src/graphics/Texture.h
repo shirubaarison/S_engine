@@ -7,7 +7,7 @@
 class Texture {
 public:
   Texture();
-  Texture(const char *imagePath, const char *type, GLuint slot, GLenum wrapping);
+  Texture(const char *imagePath, const char *type, GLenum wrapping);
   ~Texture();
 
   Texture(const Texture&) = delete;
