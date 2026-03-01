@@ -10,7 +10,7 @@
 class GameObject {
 public:
   GameObject() = default;
-  GameObject(std::shared_ptr<Model>,
+  GameObject(std::shared_ptr<Model> model,
              glm::vec3 pos = {0, 0, 0},
              glm::vec3 rot = {0, 0, 0},
              glm::vec3 scale = { 1, 1, 1});
@@ -24,6 +24,8 @@ public:
   const glm::vec3& getScale() const { return m_scale; }
 
   void setPosition(const glm::vec3& pos) { m_position = pos; }
+  void setRotation(const glm::vec3& rot) { m_rotation = rot; }
+  void setScale(const glm::vec3& scale) { m_scale = scale; }
   void setModel(std::shared_ptr<Model> model) { m_model = model; }
 
 protected:

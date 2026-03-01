@@ -17,10 +17,11 @@ namespace {
   }
 }
 
-GameObject::GameObject(std::shared_ptr<Model>, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale)
+GameObject::GameObject(std::shared_ptr<Model> model, glm::vec3 pos, glm::vec3 rot, glm::vec3 scale)
   : m_position(pos),
     m_rotation(rot),
-    m_scale(scale) {}
+    m_scale(scale),
+    m_model(model) {}
 
 void GameObject::render(Shader& shader, Camera& camera)
 {
