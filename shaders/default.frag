@@ -9,6 +9,9 @@ in vec3 crntPos;
 uniform sampler2D texture_diffuse;
 uniform sampler2D texture_specular;
 
+uniform int useDiffuseTexture;
+uniform int useSpecularTexture;
+
 uniform vec4 lightColor;
 uniform vec3 lightPos;
 uniform vec3 camPos;
@@ -24,16 +27,24 @@ uniform Material material;
 void main()
 {
   vec4 albedo;
-  albedo = texture(texture_diffuse, TexCoords);
+  if (useDiffuseTexture == 1) {
+    albedo = texture(texture_diffuse, TexCoords);
+  } else {
+    albedo = vec4(material.diffuse, 1.0);
+  }
 
   vec3 specularColor;
-  specularColor = texture(texture_specular, TexCoords).rgb;
+  if (useSpecularTexture == 1) {
+    specularColor = texture(texture_specular, TexCoords).rgb;
+  } else {
+    specularColor = material.specular;
+  }
 
   vec3 norm = normalize(Normal);
   vec3 lightDir = normalize(lightPos - crntPos);
   vec3 viewDir = normalize(camPos - crntPos);
 
-  vec3 ambient = min(material.ambient, 0.4) * lightColor.rgb;
+  vec3 ambient = min(material.ambient, vec3(0.4)) * lightColor.rgb;
 
   float diff = max(dot(norm, lightDir), 0.0);
   vec3 diffuse = diff * lightColor.rgb;
