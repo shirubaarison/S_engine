@@ -25,6 +25,7 @@ public:
 
   Camera(glm::vec3 position = glm::vec3{0, 0, 0},
          glm::vec3 up = glm::vec3{0.0f, 1.0f, 0.0f},
+         glm::vec3 target = glm::vec3{0.0f, 0.0f, 0.0f},
          float yaw = DEFAULT_YAW,
          float pitch = DEFAULT_PITCH);
   ~Camera();
@@ -38,6 +39,7 @@ public:
   glm::vec3 getPosition() const { return m_position; }
   glm::vec3 getFront() const { return m_front; }
   glm::vec3 getUp() const { return m_up; }
+  glm::vec3 getTarget() const { return m_target; }
   glm::vec3 getRight() const { return m_right; }
   glm::vec3 getWorldUp() const { return m_worldUp; }
 
@@ -48,17 +50,28 @@ public:
   float getNearPlane() const { return m_nearPlane; }
   float getFarPlane() const { return m_farPlane; }
   float getAspectRatio() const { return m_aspectRatio; }
+  float getOrbitDistance() const { return m_orbitDistance; }
+  float getOrbitHeightOffset() const { return m_orbitHeightOffset; }
 
   void setPosition(const glm::vec3& pos);
+  void setTarget(const glm::vec3& target) { m_target = target; }
   void setMovementSpeed(float moveSpeed) { m_moveSpeed = moveSpeed; }
   void setMouseSensibility(float sensibility) { m_mouseSen = sensibility; }
   void setAspectRatio(float aspectRatio) { m_aspectRatio = aspectRatio; }
+  void setOrbitDistance(float orbitDistance) { m_orbitDistance = orbitDistance; }
+  void setOrbitHeightOffset(float orbitHeightOffset) { m_orbitHeightOffset = orbitHeightOffset; }
+  void setThirdPersonMode(bool thirdPersonMode) { m_thirdPersonMode = thirdPersonMode; }
+
+  bool isThirdPerson() const { return m_thirdPersonMode; }
+
+  void updateThirdPerson();
 
 private:
   glm::vec3 m_position;
   glm::vec3 m_front;
   glm::vec3 m_up;
   glm::vec3 m_right;
+  glm::vec3 m_target;
 
   glm::vec3 m_worldUp;
 
@@ -72,6 +85,10 @@ private:
   float m_nearPlane;
   float m_farPlane;
   float m_aspectRatio;
+  float m_orbitDistance;
+  float m_orbitHeightOffset;
+
+  bool m_thirdPersonMode;
 
   void updateCameraVectors();
 };

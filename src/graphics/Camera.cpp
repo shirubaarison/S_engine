@@ -2,11 +2,13 @@
 #include "glm/ext/matrix_clip_space.hpp"
 #include "glm/ext/matrix_transform.hpp"
 #include "glm/ext/vector_float3.hpp"
+#include "glm/geometric.hpp"
 #include "glm/trigonometric.hpp"
 #include <cmath>
 
-Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
+Camera::Camera(glm::vec3 position, glm::vec3 up, glm::vec3 target, float yaw, float pitch)
   : m_position{position},
+    m_target{target},
     m_worldUp{up},
     m_yaw{yaw},
     m_pitch{pitch},
@@ -14,7 +16,10 @@ Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch)
     m_mouseSen{DEFAULT_SENSITIVITY},
     m_zoom{DEFAULT_ZOOM},
     m_nearPlane{DEFAULT_NEAR_PLANE},
-    m_farPlane{DEFAULT_FAR_PLANE} 
+    m_farPlane{DEFAULT_FAR_PLANE},
+    m_orbitDistance{8.0f},
+    m_orbitHeightOffset{2.0f},
+    m_thirdPersonMode{false}
 {
   updateCameraVectors();
 }
@@ -34,8 +39,13 @@ glm::mat4 Camera::getProjectionMatrix() const
 
 void Camera::setPosition(const glm::vec3 &pos)
 {
-  m_position = pos;
-  updateCameraVectors();
+  if (m_thirdPersonMode) {
+    m_target = pos;
+    updateThirdPerson();
+  } else {
+    m_position = pos;
+    updateCameraVectors();
+  }
 }
 
 void Camera::processKeyboard(Camera_Movement direction, float deltaTime)
@@ -66,13 +76,24 @@ void Camera::processMouseMovement(float xoffset, float yoffset,
   m_pitch += yoffset;
 
   if (constrainPitch) {
-    if (m_pitch > 89.0f)
-      m_pitch = 89.0f;
-    if (m_pitch < -89.0f)
-      m_pitch = -89.0f;
+    if (m_thirdPersonMode) {
+      if (m_pitch > 60.0f)
+        m_pitch = 60.0f;
+      if (m_pitch < -30.0f)
+        m_pitch = -30.0f;
+    } else {
+      if (m_pitch > 89.0f)
+        m_pitch = 89.0f;
+      if (m_pitch < -89.0f)
+        m_pitch = -89.0f;
+    }
   }
 
-  updateCameraVectors();
+  if (m_thirdPersonMode) {
+    updateThirdPerson();
+  } else {
+    updateCameraVectors();
+  }
 }
 
 void Camera::updateCameraVectors()
@@ -83,6 +104,24 @@ void Camera::updateCameraVectors()
   front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
   m_front = glm::normalize(front);
 
+  m_right = glm::normalize(glm::cross(m_front, m_worldUp));
+  m_up = glm::normalize(glm::cross(m_right, m_front));
+}
+
+void Camera::updateThirdPerson()
+{
+  if (!m_thirdPersonMode)
+    return;
+
+  glm::vec3 lookAtPoint = m_target + glm::vec3(0, m_orbitHeightOffset, 0);
+
+  float camX = lookAtPoint.x + m_orbitDistance * cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+  float camY = lookAtPoint.y + m_orbitDistance * sin(glm::radians(m_pitch));
+  float camZ = lookAtPoint.z + m_orbitDistance * sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+
+  m_position = glm::vec3{camX, camY, camZ};
+
+  m_front = glm::normalize(lookAtPoint - m_position);
   m_right = glm::normalize(glm::cross(m_front, m_worldUp));
   m_up = glm::normalize(glm::cross(m_right, m_front));
 }
