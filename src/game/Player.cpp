@@ -1,75 +1,66 @@
+#include <cmath>
 #include <glm/ext/vector_float2.hpp>
-#include <algorithm>
-#include <cstdlib>
+#include <memory>
 
 #include "game/Player.h"
-#include "utils/debug.h"
+#include "core/GameObject.h"
 
-#define PLAYER_WIDTH 32
-#define PLAYER_HEIGHT 64
+Player::Player(Input* input, std::shared_ptr<Model> model, glm::vec3 startPos)
+  : GameObject(model, startPos), m_input(input) {}
 
-#define MAX_MOVE_SPEED 1000.0f
-
-Player::Player(Input *input, glm::vec2 pos)
-    : input(input), baseSpeed(5000.0f), pos(pos), velocity(glm::vec2(0, 0)),
-      width(PLAYER_WIDTH), height(PLAYER_HEIGHT), direction(Direction::None), isDead(false){
-#ifdef DEBUG_MESSAGES 
-  std::cout << "[Player] initialized successfully." << std::endl;
-#endif
+void Player::update(float deltaTime)
+{
+  checkGround();
+  handleInput(deltaTime);
+  applyPhysics(deltaTime);
 }
 
-void Player::update(float deltaTime) {
-  handleKeyboardInput(deltaTime);
+void Player::handleInput(float deltaTime)
+{
+  glm::vec3 forward(
+    sin(m_rotation.y),
+    0.0f,
+    cos(m_rotation.y)
+  );
 
-  pos.x += velocity.x * deltaTime;
-  pos.y += velocity.y * deltaTime;
+  if (m_input->isKeyPressed(GLFW_KEY_UP)) {
+    m_position += forward * m_moveSpeed * deltaTime;
+  }
+
+  if (m_input->isKeyPressed(GLFW_KEY_DOWN)) {
+    m_position -= forward * m_moveSpeed * deltaTime;
+  }
+
+  if (m_input->isKeyPressed(GLFW_KEY_LEFT)) {
+    m_rotation.y += m_rotationSpeed * deltaTime;
+  }
+
+  if (m_input->isKeyPressed(GLFW_KEY_RIGHT)) {
+    m_rotation.y -= m_rotationSpeed * deltaTime;
+  }
+
+  if (m_input->isKeyPressed(GLFW_KEY_SPACE) && m_isGrounded) {
+    m_velocity.y = m_jumpStrength;
+    m_isGrounded = false;
+  }
 }
 
-void Player::handleKeyboardInput(float deltaTime) {
-  float acceleration = baseSpeed * deltaTime;
-
-  if (input->isKeyPressed(GLFW_KEY_LEFT)) {
-    velocity.x -= acceleration;
+void Player::applyPhysics(float deltaTime)
+{
+  if (!m_isGrounded) {
+    m_velocity.y += m_gravity * deltaTime;
   }
 
-  if (input->isKeyPressed(GLFW_KEY_RIGHT)) {
-    velocity.x += acceleration;
-  }
-
-  if (input->isKeyPressed(GLFW_KEY_UP)) {
-    velocity.y -= acceleration;
-  }
-
-  if (input->isKeyPressed(GLFW_KEY_DOWN)) {
-    velocity.y += acceleration;
-  }
-
-  if (!input->isKeyPressed(GLFW_KEY_LEFT) &&
-      !input->isKeyPressed(GLFW_KEY_RIGHT)) {
-    velocity.x *= 0.2f;
-
-    if (std::abs(velocity.x) < 0.1f)
-      velocity.x = 0.0f;
-  }
-
-  if (!input->isKeyPressed(GLFW_KEY_UP) &&
-      !input->isKeyPressed(GLFW_KEY_DOWN)) {
-    velocity.y *= 0.2f;
-
-    if (std::abs(velocity.y) < 0.1f)
-      velocity.y = 0.0f;
-  }
-
-  velocity.x = std::clamp(velocity.x, -MAX_MOVE_SPEED, MAX_MOVE_SPEED);
-  velocity.y = std::clamp(velocity.y, -MAX_MOVE_SPEED, MAX_MOVE_SPEED);
+  m_position += m_velocity * deltaTime;
 }
 
-glm::vec2 Player::getPos() const { return pos; }
-
-glm::vec2 Player::getVelocity() const { return velocity; }
-
-void Player::setPos(glm::vec2 pos) { this->pos = pos; }
-
-int Player::getWidth() const { return width; }
-
-int Player::getHeight() const { return height; }
+void Player::checkGround()
+{
+  if (m_position.y <= 0.0f) {
+    m_position.y = 0.0f;
+    m_velocity.y = 0.0f;
+    m_isGrounded = true;
+  } else {
+    m_isGrounded = false;
+  }
+}
