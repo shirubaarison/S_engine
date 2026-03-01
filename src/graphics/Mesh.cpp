@@ -67,11 +67,13 @@ Mesh::Mesh(Mesh&& other) noexcept
     m_vbo{other.m_vbo},
     m_ebo{other.m_ebo},
     m_vertices{std::move(other.m_vertices)},
-    m_indices{std::move(other.m_indices)}
+    m_indices{std::move(other.m_indices)},
+    m_materialIndex{other.m_materialIndex}
 {
   other.m_vao = 0;
   other.m_vbo = 0;
   other.m_ebo = 0;
+  other.m_materialIndex = 0;
 }
 
 Mesh& Mesh::operator=(Mesh&& other) noexcept
@@ -89,10 +91,12 @@ Mesh& Mesh::operator=(Mesh&& other) noexcept
     m_ebo = other.m_ebo;
     m_vertices = std::move(other.m_vertices);
     m_indices = std::move(other.m_indices);
+    m_materialIndex = other.m_materialIndex;
 
     other.m_vao = 0;
     other.m_vbo = 0;
     other.m_ebo = 0;
+    other.m_materialIndex = 0;
   }
 
   return *this;
