@@ -13,20 +13,20 @@ public:
 
   bool isMouseButtonPressed(int button);
 
-  void getMousePosition(double &x, double &y) const;
-  void getMouseOffset(double &xoffset, double &yoffset);
+  void getMousePosition(double& x, double& y) const;
+  void getMouseOffset(double& xoffset, double& yoffset);
   void setCurosrPosition(double x, double y);
 
   void setMouseCaptured(bool captured);
 
   bool getMouseCaptured() const { return m_mouseCaptured; }
 private:
-  GLFWwindow *m_window;
+  GLFWwindow* m_window;
 
   double lastX;
   double lastY;
-  bool firstMouse{true};
-  bool m_mouseCaptured{false};
+  bool m_firstMouse;
+  bool m_mouseCaptured;
 };
 
 #endif // !INPUT_CLASS_H

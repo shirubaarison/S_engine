@@ -2,9 +2,10 @@
 #include "utils/debug.h"
 #include "input/Input.h"
 
-Input::Input() {}
+Input::Input() : m_firstMouse(true), m_mouseCaptured(true) {}
 
-bool Input::init(GLFWwindow* window) {
+bool Input::init(GLFWwindow* window)
+{
   m_window = window;
 
   if (m_window == nullptr) {
@@ -22,30 +23,36 @@ bool Input::init(GLFWwindow* window) {
   std::cout << "[Input] initialized successfully.\n";
 #endif
 
+  glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
   return true;
 }
 
-bool Input::isKeyPressed(int key) {
+bool Input::isKeyPressed(int key)
+{
   if (m_window == nullptr) return false;
 
   return glfwGetKey(m_window, key) == GLFW_PRESS;
 }
 
-bool Input::isKeyReleased(int key) {
-  if (m_window == nullptr) 
+bool Input::isKeyReleased(int key)
+{
+  if (m_window == nullptr)
     return false;
 
   return glfwGetKey(m_window, key) == GLFW_RELEASE;
 }
 
-bool Input::isMouseButtonPressed(int button) {
+bool Input::isMouseButtonPressed(int button)
+{
   if (m_window == nullptr) 
     return false;
 
   return glfwGetMouseButton(m_window, button) == GLFW_PRESS;
 }
 
-void Input::getMousePosition(double &x, double &y) const {
+void Input::getMousePosition(double& x, double& y) const
+{
   if (m_window == nullptr) {
     x = y = -1;
     return;
@@ -54,15 +61,15 @@ void Input::getMousePosition(double &x, double &y) const {
   glfwGetCursorPos(m_window, &x, &y);
 }
 
-void Input::getMouseOffset(double &xoffset, double &yoffset)
+void Input::getMouseOffset(double& xoffset, double& yoffset)
 {
   double xpos, ypos;
   getMousePosition(xpos, ypos);
 
-  if (firstMouse) {
+  if (m_firstMouse) {
     lastX = xpos;
     lastY = ypos;
-    firstMouse = false;
+    m_firstMouse = false;
   }
 
   xoffset = xpos - lastX;

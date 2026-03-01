@@ -19,7 +19,7 @@ Camera::Camera(glm::vec3 position, glm::vec3 up, glm::vec3 target, float yaw, fl
     m_farPlane{DEFAULT_FAR_PLANE},
     m_orbitDistance{8.0f},
     m_orbitHeightOffset{2.0f},
-    m_thirdPersonMode{false}
+    m_thirdPersonMode{true}
 {
   updateCameraVectors();
 }
@@ -116,7 +116,7 @@ void Camera::updateThirdPerson()
   glm::vec3 lookAtPoint = m_target + glm::vec3(0, m_orbitHeightOffset, 0);
 
   float camX = lookAtPoint.x + m_orbitDistance * cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-  float camY = lookAtPoint.y + m_orbitDistance * sin(glm::radians(m_pitch));
+  float camY = lookAtPoint.y - m_orbitDistance * sin(glm::radians(m_pitch));
   float camZ = lookAtPoint.z + m_orbitDistance * sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
 
   m_position = glm::vec3{camX, camY, camZ};

@@ -23,19 +23,19 @@ void Player::handleInput(float deltaTime)
     cos(m_rotation.y)
   );
 
-  if (m_input->isKeyPressed(GLFW_KEY_UP)) {
+  if (m_input->isKeyPressed(GLFW_KEY_W)) {
     m_position += forward * m_moveSpeed * deltaTime;
   }
 
-  if (m_input->isKeyPressed(GLFW_KEY_DOWN)) {
+  if (m_input->isKeyPressed(GLFW_KEY_S)) {
     m_position -= forward * m_moveSpeed * deltaTime;
   }
 
-  if (m_input->isKeyPressed(GLFW_KEY_LEFT)) {
+  if (m_input->isKeyPressed(GLFW_KEY_A)) {
     m_rotation.y += m_rotationSpeed * deltaTime;
   }
 
-  if (m_input->isKeyPressed(GLFW_KEY_RIGHT)) {
+  if (m_input->isKeyPressed(GLFW_KEY_D)) {
     m_rotation.y -= m_rotationSpeed * deltaTime;
   }
 

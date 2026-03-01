@@ -2,7 +2,7 @@
 #include <glm/fwd.hpp>
 
 #include "graphics/Shader.h"
-#include "resources/ResouceManager.h"
+#include "resources/ResourceManager.h"
 #include "utils/common.h"
 #include "utils/debug.h"
 #include "core/SpriteRenderer.h"

@@ -16,8 +16,6 @@ public:
 
   bool init();
   void run();
-  void shutdown();
-
 private:
   std::unique_ptr<Window> m_window;
   std::unique_ptr<Renderer> m_renderer;

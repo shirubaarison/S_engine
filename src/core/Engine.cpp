@@ -1,6 +1,6 @@
-#include <exception>
 #include <iostream>
 #include <memory>
+#include "core/GameObject.h"
 #include "resources/ResourceManager.h"
 #include "core/Engine.h"
 #include "core/Renderer.h"
@@ -8,7 +8,7 @@
 #include "utils/common.h"
 
 Engine::Engine() {}
-Engine::~Engine() { shutdown(); }
+Engine::~Engine() {}
 
 bool Engine::init()
 {
@@ -39,10 +39,6 @@ bool Engine::init()
 #endif
 
   return true;
-}
-
-void Engine::shutdown() {
-  // TODO
 }
 
 void Engine::update(float deltaTime)
@@ -80,25 +76,21 @@ void Engine::render()
 
 void Engine::handleInput(double deltaTime)
 {
-  if (m_input->isKeyPressed(GLFW_KEY_W))
+  if (m_input->isKeyPressed(GLFW_KEY_UP))
     m_camera->processKeyboard(Camera::Camera_Movement::FORWARD, deltaTime);
-  if (m_input->isKeyPressed(GLFW_KEY_S))
+  if (m_input->isKeyPressed(GLFW_KEY_DOWN))
     m_camera->processKeyboard(Camera::Camera_Movement::BACKWARD, deltaTime);
-  if (m_input->isKeyPressed(GLFW_KEY_A))
+  if (m_input->isKeyPressed(GLFW_KEY_LEFT))
     m_camera->processKeyboard(Camera::Camera_Movement::LEFT, deltaTime);
-  if (m_input->isKeyPressed(GLFW_KEY_D))
+  if (m_input->isKeyPressed(GLFW_KEY_RIGHT))
     m_camera->processKeyboard(Camera::Camera_Movement::RIGHT, deltaTime);
 
-  if (m_input->isKeyPressed(GLFW_KEY_ESCAPE)) {
-    m_input->setMouseCaptured(!m_input->getMouseCaptured());
+  if (m_input->isKeyPressed(GLFW_KEY_ESCAPE))
     m_camera->setThirdPersonMode(!m_camera->isThirdPerson());
-  }
 
-  if (m_input->getMouseCaptured()) {
-    double xoffset, yoffset;
-    m_input->getMouseOffset(xoffset, yoffset);
-    m_camera->processMouseMovement(xoffset, yoffset);
-  }
+  double xoffset, yoffset;
+  m_input->getMouseOffset(xoffset, yoffset);
+  m_camera->processMouseMovement(xoffset, yoffset);
 }
 
 void Engine::run()
@@ -124,21 +116,27 @@ void Engine::run()
 void Engine::loadAssets()
 {
   ResourceManager::loadShader("default", "shaders/default.vert", "shaders/default.frag");
+  auto model = ResourceManager::loadModel("default", "assets/models/churrasqueira/commercial_prop_for_brazilian_street_food_-_68.obj");
 
-  try {
-    auto playerModel = std::make_shared<Model>("assets/models/churrasqueira/commercial_prop_for_brazilian_street_food_-_68.obj");
+  // TODO: change this
+  auto player = std::make_unique<Player>(m_input.get(),
+                                         model,
+                                         glm::vec3(0.0f, 0.5f, 0.0f)
+                                         );
+  m_player = player.get();
+  m_gameObjects.push_back(std::move(player));
 
-    auto player = std::make_unique<Player>(m_input.get(),
-                                           playerModel,
-                                           glm::vec3(0.0f, 0.5f, 0.0f)
-                                           );
-    m_player = player.get();
-    m_gameObjects.push_back(std::move(player));
+  // Floor
+  m_gameObjects.push_back(std::make_unique<GameObject>(model,
+                                                       glm::vec3(0.0f, -0.5f, 0.0f),
+                                                       glm::vec3(0.0f, 0.0f, 0.0f),
+                                                       glm::vec3(20.0f, 0.2f, 20.0f)));
+  // Front prop
+  m_gameObjects.push_back(std::make_unique<GameObject>(model,
+                                                       glm::vec3(0.0f, 0.0f, -4.0f),
+                                                       glm::vec3(0.0f, 0.0f, 0.0f),
+                                                       glm::vec3(1.0f)));
 
-    std::cout << "[Engine] Player created" << std::endl;
-  } catch (const std::exception& e) {
-    std::cerr << e.what() << std::endl;
-  }
 
 #ifdef DEBUG_MESSAGES
   std::cout << "[Engine] assets loaded" << std::endl;
