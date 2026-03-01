@@ -1,5 +1,6 @@
 #include "graphics/Model.h"
 #include "assimp/types.h"
+#include "graphics/Shader.h"
 #include "graphics/Texture.h"
 
 #include <assimp/Importer.hpp>
@@ -36,9 +37,18 @@ void Model::draw(Shader& shader) const
         glActiveTexture(GL_TEXTURE0);
         m_textures[mat.diffuseTexIndex]->bind();
         shader.setInteger("texture_diffuse", 0);
-        shader.setInteger("hasTexture", 1);
+        shader.setInteger("useDiffuseTexture", 1);
       } else {
-        shader.setInteger("hasTexture", 0);
+        shader.setInteger("useDiffuseTexture", 0);
+      }
+
+      if (mat.specularTexIndex >= 0 && static_cast<size_t>(mat.specularTexIndex) < m_textures.size()) {
+        glActiveTexture(GL_TEXTURE1);
+        m_textures[mat.specularTexIndex]->bind();
+        shader.setInteger("texture_specular", 1);
+        shader.setInteger("useSpecularTexture", 1);
+      } else {
+        shader.setInteger("useSpecularTexture", 0);
       }
 
       shader.setVector3f("material.ambient", mat.ambientColor);
@@ -122,7 +132,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
   }
 
   unsigned int materialIndex{0};
-  if (mesh->mMaterialIndex > 0) {
+  if (mesh->mMaterialIndex < scene->mNumMaterials) {
     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
     materialIndex = loadMaterial(material);
   }
@@ -143,6 +153,7 @@ unsigned int Model::loadMaterial(aiMaterial *mat)
     auto texture = loadTexture(fullPath, "diffuse");
     if (texture) {
       material.diffuseTexIndex = static_cast<int>(m_textures.size());
+      // std::cout << "diffuseTexIndex for " << texPath.C_Str() << " is " << material.diffuseTexIndex << std::endl;
       m_textures.push_back(texture);
     }
   }
@@ -189,15 +200,16 @@ std::shared_ptr<Texture> Model::loadTexture(const std::string& path, const std::
   // it is cached?
   for (const auto& tex : m_textures) {
     if (tex->getPath() == path) {
+      std::cout << "'" << path << "' already cached." << std::endl;
       return tex;
     }
   }
 
   try {
+    std::cout << "loading '" << path << "'." << std::endl;
     auto texture = std::make_shared<Texture>(
       path.c_str(),
       type.c_str(),
-      m_textures.size(),
       GL_REPEAT
     );
 
