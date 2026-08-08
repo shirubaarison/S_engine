@@ -23,6 +23,8 @@ void Player::handleInput(float deltaTime)
     cos(m_rotation.y)
   );
 
+  glm::vec3 right = glm::cross(forward, glm::vec3(0, 1, 0));
+
   if (m_input->isKeyPressed(GLFW_KEY_W)) {
     m_position += forward * m_moveSpeed * deltaTime;
   }
@@ -32,11 +34,11 @@ void Player::handleInput(float deltaTime)
   }
 
   if (m_input->isKeyPressed(GLFW_KEY_A)) {
-    m_rotation.y += m_rotationSpeed * deltaTime;
+    m_position -= right * m_moveSpeed * deltaTime;
   }
 
   if (m_input->isKeyPressed(GLFW_KEY_D)) {
-    m_rotation.y -= m_rotationSpeed * deltaTime;
+    m_position += right * m_moveSpeed * deltaTime;
   }
 
   if (m_input->isKeyPressed(GLFW_KEY_SPACE) && m_isGrounded) {
